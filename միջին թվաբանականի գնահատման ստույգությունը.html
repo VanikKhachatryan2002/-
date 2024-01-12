@@ -1,0 +1,273 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: rgb(237, 237, 237);
+            padding: 50px;
+        }   
+        h1{
+            text-align: center;
+            margin: 0 0 50px;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+        .form{
+            border: 3px solid rgb(102, 102, 102);
+            padding: 50px;
+            margin: 50px 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #6bad97;
+            box-shadow: 5px 5px 5px white;
+        }   
+        .form textarea {
+            width: 50%;
+            margin: auto;
+            margin-bottom: 30px;
+            padding: 10px;
+            font-size: 20px;
+        }
+        .form  button{
+            max-width: 300px;
+            background-color: red;
+            color: white;
+            margin: auto;
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        table{
+            margin: auto;
+        }
+        table tr:not(.banadever) td{
+                padding: 10px;
+        }
+        table .mijin::after{
+            content: '_''';
+            position: relative;
+            top: -16px;
+            left: -9px;
+            font-size: 15px;
+            font-weight: bolder;
+        }
+        .t_container .t{
+            text-align: center;
+            background-color: blue;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            display: none;
+        }
+        .error{
+            text-align: center;
+            background-color: red;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            display: none;
+        }
+        .t_container {
+            width: 50%;
+            margin: auto;
+            margin-top: 30px;
+        }
+        @media(max-width : 768px){
+            body{
+                padding: 20px;
+            }
+            .form textarea {
+                width: 100%;
+                font-size: 18px;
+            }
+            table{
+                width: 100%!important;
+                font-size: 12px;
+            }
+            .t_container .t{
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Գտեք միջին թվաբանականի գնահատման ստույգությունը</h1>
+    <div class="form">      
+        <textarea id="x" placeholder='Լրացրեք "x" երի առանցքը' cols="30" rows="3" required></textarea>
+        <textarea id="y" placeholder='Լրացրեք "y" ների առանցքը'  cols="30" rows="3" required></textarea>
+        <button id="button">Հաշվարկել</button>
+    </div>
+    <table border="2px" width="50%" align="center"  cellspacing="2">
+        <tr class="banadever">
+            <th>x</th>
+            <th>y</th>
+            <th>z<sub>i</sub> = x<sub>i</sub> - y<sub>i</sub></th>
+            <th>z<sub>i</sub> - <span class="mijin">Z</span></th>
+            <th>(z<sub>i</sub> - <span class="mijin">Z</span>)<sup>2</sup></th>
+        </tr>
+        <tr>
+            <td><span class="mijin">X</span> = <span class="mijin_ardyunq_x"></span></td>
+            <td><span class="mijin">Y</span> = <span class="mijin_ardyunq_y"></span></td>
+            <td><span class="mijin">Z</span> = <span class="mijin_ardyunq_z"></span></td>
+            <td></td>
+            <td> { <span class="sum_z"></span></td>
+        </tr>
+    </table>
+    <div class="t_container">
+        <div class="t">
+            <code class="code"></code>
+        </div>
+        <div class="error">
+            <p class="error_message"></p>
+        </div>
+        
+    </div>
+<script>
+    let x = document.querySelector('#x')
+    let y = document.querySelector('#y')
+    let btn = document.querySelector('#button')
+    let table = document.querySelector('table')
+    let mijin_ardyunq_x = document.querySelector('.mijin_ardyunq_x')
+    let mijin_ardyunq_y = document.querySelector('.mijin_ardyunq_y')
+    let mijin_ardyunq_z = document.querySelector('.mijin_ardyunq_z')
+    let z = document.querySelector('.sum_z')
+    let t_container = document.querySelector('.t')
+    let code = document.querySelector('.t .code')
+    let error = document.querySelector('.error')
+    let error_message = document.querySelector('.error_message')
+    function mijinTvabanakaniStuygutyun(x,y) {
+        if(validateInput(x) || validateInput(y)){
+            return
+        }
+        let t = 0
+        let x_sum = 0
+        let y_sum = 0
+        let z_sum = 0
+        if(x.value && y.value){
+               let array_x = x.value.split(',')
+               let array_y = y.value.split(',')
+
+              if(array_x.length == array_y.length){
+                let rows = table.getElementsByTagName('tr')
+                let rows_length = rows.length
+                for(let i = 1; i < rows_length - 1; i++){   
+                    table.deleteRow(1)
+                } 
+                for(let i = 0; i < array_x.length; i++){
+                    if(parseInt(array_x[i])){
+                        let newRow = table.insertRow(i + 1)
+                        let ceil0 = newRow.insertCell(0)
+                        let ceil1 = newRow.insertCell(1)
+                        let ceil2 = newRow.insertCell(2)
+                        let ceil3 = newRow.insertCell(3)
+                        let ceil4 = newRow.insertCell(4)  
+                        let z_ = parseInt(array_x[i]) - parseInt(array_y[i])
+                        z_ = z_ % 1 === 0 ? z_ : z_.toFixed(2)
+                        ceil0.innerText = parseInt(array_x[i])
+                        ceil1.innerText = parseInt(array_y[i])
+                        ceil2.innerText = z_
+                        ceil3.innerText = z_
+                        x_sum += parseInt(array_x[i])
+                        y_sum += parseInt(array_y[i])
+                        z_sum += z_
+                    }
+                }
+                let x_mij = x_sum / array_x.length
+                let y_mij = y_sum / array_y.length
+                let z_mij = z_sum / array_x.length
+                z_sum = z_sum % 1 === 0 ? z_sum : z_sum.toFixed(2)
+                mijin_ardyunq_x.innerText = x_mij % 1 === 0 ? x_mij : x_mij.toFixed(2)
+                mijin_ardyunq_y.innerText = y_mij % 1 === 0 ? y_mij : y_mij.toFixed(2)
+                mijin_ardyunq_z.innerText =  z_mij % 1 === 0 ? z_mij : z_mij.toFixed(2)
+
+                let  tr_3 = table.querySelectorAll('tr td')
+                let z_ = 0
+                let select_row = 4
+                let z_qarakusi = 0 
+                let z_qarakusi_sum = 0
+                tr_3.forEach(function(row,index) {
+                    index = index + 1
+                    if(index % select_row  === 0){
+                        z_ = parseInt(row.innerHTML)
+                        z_ = z_  % 1 === 0 ? z_ : z_.toFixed(2)
+                        if(!isNaN(z_)){
+                            z_qarakusi = z_ - (z_sum / array_x.length)
+                            z_qarakusi = z_qarakusi % 1 === 0 ? z_qarakusi : z_qarakusi.toFixed(2)
+                            row.innerText = z_qarakusi
+                           
+                        }
+                    }
+                    else if(index % (select_row + 1)  === 0){
+                        if(index < tr_3.length - 1){
+                            select_row += 5
+                            z_qarakusi = z_qarakusi * z_qarakusi
+                            z_qarakusi = z_qarakusi % 1 === 0 ? z_qarakusi : z_qarakusi.toFixed(2)
+                            z_qarakusi_sum += parseInt(z_qarakusi)
+                            row.innerText = z_qarakusi
+                        }
+                        else{
+                            row.innerText = z_qarakusi_sum
+                        }
+                    }
+                });
+                z_mij = z_mij < 0 ? z_mij * (-1) : z_mij 
+                let sqrt_length = array_x.length * (array_x.length - 1)
+                sqrt_length = Math.sqrt(sqrt_length)
+                sqrt_length = sqrt_length % 1 === 0 ? sqrt_length : sqrt_length.toFixed(2)
+                let sqrt_z = Math.sqrt(z_qarakusi_sum)
+                sqrt_z = sqrt_z % 1 === 0 ? sqrt_z : sqrt_z.toFixed(2)
+                t = z_mij * sqrt_length / sqrt_z 
+                t = t % 1 === 0 ? t : t.toFixed(2)
+                t = isNaN(t) ? 0 : t
+                code.innerHTML = 't = ' + t
+                t_container.style.display = 'block'
+                error_messages(false)
+              }
+              else{
+                error_messages(true,"Դուք պետք է x- երի և y - ների առանցքներում ունենաք հավասար քանակությամբ թվեր")
+              }
+        }
+
+     
+    }
+    function error_messages(error_boolean,message = ''){
+        if(error_boolean){
+            error.style.display = 'block'
+            t_container.style.display = 'none'
+            error_message.innerHTML = message
+            alert(message)
+        }
+        else{
+            error.style.display = 'none'
+        }
+    }
+    function validateInput(textarea){
+        let numericValue = textarea.value.replace(/[^0-9,]/g,'');   
+        if(numericValue !== textarea.value){
+            error_messages(true,'Ձեր մուտքագրման տողում պետք է լինի միայն թվեր')
+            textarea.value = numericValue;
+            return true
+        }else{
+            return false
+        }
+    }
+    btn.addEventListener('click',function(){
+        mijinTvabanakaniStuygutyun(x,y)
+    })
+</script>
+</body>
+</html>
